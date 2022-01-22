@@ -6,7 +6,7 @@ const maxPostPage = 10;
 
 async function fetchPosts() {
   const response = await fetch(
-    "https://jsonplaceholsdsdsder.typicode.com/posts?_limit=10&_page=0"
+    "https://jsonplaceholder.typicode.com/posts?_limit=10&_page=0"
   );
   return response.json();
 }
