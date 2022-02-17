@@ -10,25 +10,40 @@ const fetchUrl = async (url) => {
 
 export function InfinitePeople() {
   // TODO: get data for InfiniteScroll via React Query
-  const { data, fetchNextPage, hasNextPage } = useInfiniteQuery(
+  const {
+    data,
+    fetchNextPage,
+    hasNextPage,
+    isFetching,
+    isLoading,
+    isError,
+    error,
+  } = useInfiniteQuery(
     "sw-people",
     ({ pageParam = initialUrl }) => fetchUrl(pageParam),
     { getNextPageParam: (lastPage) => lastPage.next || undefined }
   );
+
+  if (isLoading) return <div className="loading">Loading</div>;
+  if (isError) return <div>{error.toString()}</div>;
+
   return (
-    <InfiniteScroll loadMore={fetchNextPage} hasMore={hasNextPage}>
-      {data.pages.map((pageData) =>
-        pageData.map((person) => {
-          return (
-            <Person
-              key={person.name + person.height}
-              name={person.name}
-              hairColor={person.hair_color}
-              eyeColor={person.eye_color}
-            />
-          );
-        })
-      )}
-    </InfiniteScroll>
+    <>
+      {isFetching && <div className="loading">Loading</div>}
+      <InfiniteScroll loadMore={fetchNextPage} hasMore={hasNextPage}>
+        {data.pages.map((pageData) =>
+          pageData.results.map((person) => {
+            return (
+              <Person
+                key={person.name + person.height}
+                name={person.name}
+                hairColor={person.hair_color}
+                eyeColor={person.eye_color}
+              />
+            );
+          })
+        )}
+      </InfiniteScroll>
+    </>
   );
 }
